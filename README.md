@@ -1,145 +1,100 @@
-# Note de frais — iPhone + Epson TM-m30III
+# Note de frais — iPhone → Epson TM-m30III (Wi-Fi)
 
-Imprime une **note de frais** sur une imprimante **Epson TM-m30III** en Wi-Fi.
+App web (PWA) qui imprime une **note de frais** sur une imprimante
+**Epson TM-m30III** connectée au **même Wi-Fi** que l'iPhone.
 
-Vous saisissez :
-- le **nombre de repas** (ex. « 2 repas »)
-- le **montant HT** pour chaque taux de TVA (5,5 % / 10 % / 20 %)
+- **Développée sous Windows**, utilisée **sur iPhone**.
+- **Pas d'App Store**, pas de Xcode, pas de compte développeur Apple.
+- Elle s'installe sur l'écran d'accueil comme une vraie app (PWA) et
+  parle directement à l'imprimante via l'**API ePOS-Print** d'Epson
+  (aucun SDK propriétaire à télécharger).
+- La mise en page du ticket reproduit le modèle fourni (en-tête restaurant,
+  lignes, sous-total HT, TVA par taux, TOTAL TTC, paiements). Tous les
+  champs sont saisissables et mémorisés sur le téléphone.
 
-L'app calcule la TVA, les totaux HT et TTC, affiche un aperçu, puis imprime
-un ticket avec le détail de la TVA (sans le détail des plats).
-
-Deux versions sont disponibles :
-
-1. **App web** (`web/`) — **recommandée si vous n'avez pas Xcode.**
-   S'ouvre dans Safari, s'ajoute à l'écran d'accueil comme une vraie app.
-   Aucun Xcode, aucun compte développeur Apple.
-2. **App native iOS** (`NoteDeFrais/`) — nécessite un Mac avec Xcode.
-   Voir la section « App native » plus bas.
-
----
-
-## Version recommandée : l'app web
-
-La TM-m30III sait imprimer directement depuis un navigateur grâce au
-SDK JavaScript d'Epson (`epos-2.js`). On utilise donc une simple page web,
-servie en HTTP depuis votre Mac, et ouverte dans Safari sur l'iPhone.
-
-> **Pourquoi en HTTP et pas en ligne (HTTPS) ?** Safari interdit à une page
-> HTTPS de parler à un appareil en HTTP comme l'imprimante. La page doit donc
-> être servie en HTTP sur le **même Wi-Fi** que l'imprimante. Le mini-serveur
-> ci-dessous s'en occupe.
-
-### 1. Récupérer le SDK Epson
-
-1. Téléchargez **« Epson ePOS SDK for JavaScript »** sur le site support Epson.
-2. Dézippez et copiez le fichier `epos-2.js` dans le dossier `web/` :
-   ```
-   note-de-frais/web/epos-2.js
-   ```
-   (le nom exact peut être `epos-2.x.y.z.js` — renommez-le `epos-2.js`).
-
-### 2. Lancer le mini-serveur sur le Mac
-
-Dans le Finder, ouvrez le dossier `web/` et **double-cliquez sur
-`serveur.command`**. Une fenêtre Terminal s'ouvre et affiche une adresse, ex :
-
-```
-http://192.168.1.20:8080/
-```
-
-> Si macOS refuse d'ouvrir le fichier (« développeur non identifié »),
-> faites **clic droit → Ouvrir**, puis confirmez. Python est déjà installé
-> sur macOS, rien d'autre à télécharger.
-
-Laissez cette fenêtre ouverte tant que vous imprimez. Pour arrêter : fermez
-la fenêtre ou faites **Ctrl+C**.
-
-### 3. Ouvrir l'app sur l'iPhone
-
-1. Vérifiez que l'iPhone est sur le **même Wi-Fi** que le Mac et l'imprimante.
-2. Dans **Safari**, ouvrez l'adresse affichée (ex. `http://192.168.1.20:8080/`).
-3. Touchez **Partager** (carré avec flèche) → **Sur l'écran d'accueil**.
-   Vous obtenez une icône « Note de frais » comme une vraie app.
-
-### 4. Configurer
-
-1. Au premier lancement, l'écran **Réglages** s'ouvre.
-2. Saisissez les infos du restaurant (nom, adresse, SIRET, n° TVA…).
-3. Saisissez l'**adresse IP de l'imprimante** (port `8008` par défaut).
-4. **Enregistrer**.
-
-### 5. Imprimer
-
-1. Saisissez le nombre de repas et les montants HT par taux.
-2. Touchez **Aperçu & imprimer**, vérifiez le rendu, puis **Imprimer**.
-
-### Trouver l'IP de l'imprimante
-
-Appuyez sur le bouton **FEED** en allumant la TM-m30III : elle imprime
-un ticket de configuration avec son adresse IP.
-
-### Dépannage (web)
-
-- **« SDK Epson (epos-2.js) introuvable »** : le fichier `epos-2.js`
-  n'est pas dans le dossier `web/`.
-- **« Connexion impossible »** : IP ou port incorrect, ou iPhone/imprimante
-  pas sur le même Wi-Fi. Vérifiez aussi que le port est `8008`.
-- **Colonnes décalées sur le ticket** : ajustez la constante `LINE_WIDTH`
-  en haut de `web/app.js` (essayez `48` au lieu de `42`).
-- **L'adresse `http://…:8080` ne s'ouvre pas** : le serveur n'est pas lancé,
-  ou un pare-feu macOS bloque le port. Autorisez Python dans
-  **Réglages Système → Réseau → Pare-feu**.
+> **Pourquoi en HTTPS ?** Safari interdit à une page HTTPS de parler à un
+> appareil en HTTP. On héberge donc l'app en **HTTPS** (GitHub Pages) et on
+> active le **HTTPS sur l'imprimante**, puis on fait confiance à son
+> certificat une seule fois sur l'iPhone (voir étape 3).
 
 ---
 
-## Version native iOS (optionnelle, nécessite Xcode)
+## 1. Mettre l'app en ligne (HTTPS) — depuis Windows
 
-Application SwiftUI dans `NoteDeFrais/`. Mêmes fonctions, plus la découverte
-automatique de l'imprimante (Bonjour). À réserver si vous disposez d'un Mac
-avec Xcode et de l'espace de stockage nécessaire.
+L'app est un site statique. Le plus simple est **GitHub Pages** (HTTPS gratuit) :
 
-### Pré-requis
+1. Poussez ce dépôt sur GitHub (déjà fait si vous lisez ceci sur GitHub).
+2. Dans le dépôt : **Settings → Pages → Build and deployment → Source = GitHub Actions**.
+3. À chaque `git push` sur la branche, le workflow `.github/workflows/pages.yml`
+   publie le site. L'URL s'affiche dans l'onglet **Actions** puis **Settings → Pages**,
+   du type `https://VOTRE-COMPTE.github.io/note-de-frais/`.
 
-- Un Mac avec **Xcode 15+**
-- Un iPhone (iOS 16+)
-- Le **SDK ePOS d'Epson pour iOS** (`libepos2.xcframework`)
-- (Optionnel) `xcodegen` : `brew install xcodegen`
+> Tester en local sous Windows (optionnel) : `py -m http.server 8080` puis
+> `http://localhost:8080`. ⚠️ En HTTP local, l'impression vers une imprimante
+> en HTTPS sera bloquée par le navigateur — utilisez l'URL Pages (HTTPS) pour
+> les vrais essais d'impression.
 
-### Mise en route
+## 2. Préparer l'imprimante (une fois)
 
-1. Téléchargez le **SDK ePOS pour iOS** et copiez `libepos2.xcframework` dans
-   `Vendor/EpsonSDK/`.
-2. `xcodegen generate` puis `open NoteDeFrais.xcodeproj`
-   (ou créez un projet Xcode iOS et glissez le dossier `NoteDeFrais/` + le
-   framework dedans).
-3. Onglet **Signing & Capabilities** : cochez « Automatically manage signing »,
-   choisissez votre Team, mettez un Bundle ID unique.
-4. **Cmd+R** pour installer sur l'iPhone connecté, puis approuvez le profil
-   développeur dans **Réglages → Général → VPN et gestion d'appareils**.
+1. Branchez la TM-m30III en Wi-Fi sur le **même réseau** que l'iPhone.
+2. Trouvez son **adresse IP** : appuyez sur le bouton **FEED** en l'allumant,
+   elle imprime un ticket de configuration avec l'IP (ex. `192.168.1.50`).
+3. Dans la page de configuration web de l'imprimante (Epson TM Utility ou
+   `http://IP-de-l-imprimante/`), vérifiez que **ePOS-Print** est **activé**
+   et que le **SSL/TLS** (HTTPS) est activé.
 
-> Avec un Apple ID gratuit, l'app expire après 7 jours. Pour une utilisation
-> durable, il faut un compte Apple Developer Program (99 $/an).
+## 3. Installer l'app sur l'iPhone
 
-### Structure (native)
+1. Vérifiez que l'iPhone est sur le **même Wi-Fi** que l'imprimante.
+2. **Faites confiance au certificat de l'imprimante** : dans Safari, ouvrez
+   `https://IP-de-l-imprimante/` une fois et acceptez l'avertissement de
+   sécurité (certificat auto-signé). Sans cette étape, l'impression échoue.
+3. Ouvrez l'**URL GitHub Pages** dans Safari.
+4. **Partager** (carré avec flèche) → **Sur l'écran d'accueil**. Vous obtenez
+   l'icône « Note de frais ».
 
-```
-NoteDeFrais/
-├── NoteDeFraisApp.swift
-├── Models/        (AppSettings, Receipt)
-├── Services/      (PrinterService, PrinterDiscovery, ReceiptBuilder)
-└── Views/         (ContentView, Preview, Settings, Discovery)
-```
+## 4. Configurer
+
+1. Touchez l'engrenage **⚙︎** (en haut à droite).
+2. Renseignez l'en-tête du restaurant (nom, adresse, téléphone, TVA intra, SIRET).
+3. **Adresse ePOS-Print** : `https://IP-de-l-imprimante/cgi-bin/epos/service.cgi?devid=local_printer&timeout=10000`
+   (remplacez l'IP). **Largeur** : `48` pour du 80 mm.
+4. Fermez : tout est enregistré sur le téléphone.
+
+## 5. Imprimer
+
+1. Saisissez les **lignes** (désignation + montant), les **montants HT par
+   taux de TVA**, puis les **paiements**.
+2. Vérifiez l'**aperçu**, puis touchez **Imprimer**.
 
 ---
 
-## Calculs effectués (commun aux deux versions)
+## Calculs (par taux de TVA)
 
-Pour chaque taux de TVA :
-- `TVA = HT × taux`
-- `TTC = HT + TVA`
+- `TVA = HT × taux`, `TTC = HT + TVA`
+- `Sous total HT = Σ HT`, `Total TVA = Σ TVA`, `TOTAL TTC = HT + TVA`
 
-Totaux :
-- `Total HT = somme des HT`
-- `Total TVA = somme des TVA`
-- `Total TTC = Total HT + Total TVA`
+## Dépannage
+
+- **« Échec … »** à l'impression : IP/port incorrects, iPhone et imprimante
+  pas sur le même Wi-Fi, ou **certificat de l'imprimante non accepté** (étape 3.2).
+- **Colonnes décalées** : changez la **Largeur** dans Réglages (essayez `42`).
+- **Accents mal imprimés** : réglez le **jeu de caractères** de l'imprimante
+  sur **WPC1252 / Europe de l'Ouest** dans sa configuration.
+- **L'app ne parle pas à l'imprimante alors que l'aperçu est correct** :
+  l'app doit être servie en **HTTPS** (URL GitHub Pages), pas en `http://localhost`.
+
+## Structure
+
+```
+index.html              écran principal (formulaire + aperçu)
+css/styles.css          interface
+js/app.js               état, formulaires, persistance, impression
+js/receipt.js           calculs TVA + mise en forme du ticket
+js/epos.js              génération XML ePOS-Print + envoi HTTP
+manifest.webmanifest    PWA (ajout à l'écran d'accueil)
+sw.js                   service worker (ouverture hors connexion)
+icons/                  icônes de l'app
+tools/make_icons.py     (re)génère les icônes
+.github/workflows/      déploiement GitHub Pages
+```

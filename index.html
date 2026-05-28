@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0f766e" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Note de frais" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
+  <link rel="icon" href="./icons/icon-192.png" />
+  <link rel="stylesheet" href="./css/styles.css" />
+  <title>Note de frais</title>
+</head>
+<body>
+  <header class="topbar">
+    <h1>Note de frais</h1>
+    <button id="open-settings" class="icon-btn" type="button" title="Réglages" aria-label="Réglages">⚙︎</button>
+  </header>
+
+  <main>
+    <section class="card">
+      <div class="card-head">
+        <h2>Lignes</h2>
+        <button id="add-item" class="add-btn" type="button">+ Ligne</button>
+      </div>
+      <div id="items-list" class="list"></div>
+    </section>
+
+    <section class="card">
+      <div class="card-head">
+        <h2>TVA (montants HT par taux)</h2>
+        <button id="add-tva" class="add-btn" type="button">+ Taux</button>
+      </div>
+      <div id="tva-list" class="list"></div>
+      <dl class="totals">
+        <div><dt>Sous total HT</dt><dd id="sum-ht">—</dd></div>
+        <div><dt>Total TVA</dt><dd id="sum-tva">—</dd></div>
+        <div class="grand"><dt>TOTAL TTC</dt><dd id="sum-ttc">—</dd></div>
+      </dl>
+    </section>
+
+    <section class="card">
+      <div class="card-head">
+        <h2>Paiements</h2>
+        <button id="add-paiement" class="add-btn" type="button">+ Paiement</button>
+      </div>
+      <div id="paiements-list" class="list"></div>
+    </section>
+
+    <section class="card">
+      <h2>Aperçu du ticket</h2>
+      <pre id="preview" class="preview"></pre>
+    </section>
+  </main>
+
+  <footer class="actionbar">
+    <div id="status" class="status"></div>
+    <button id="print-btn" class="print-btn" type="button">Imprimer</button>
+  </footer>
+
+  <dialog id="settings" class="settings">
+    <form method="dialog">
+      <h2>Réglages</h2>
+
+      <fieldset>
+        <legend>En-tête du restaurant</legend>
+        <label>Nom<input id="set-nom" type="text" /></label>
+        <label>Adresse<input id="set-adresse1" type="text" /></label>
+        <label>Code postal et ville<input id="set-adresse2" type="text" /></label>
+        <label>Téléphone<input id="set-telephone" type="text" /></label>
+        <label>TVA intra<input id="set-tvaIntra" type="text" /></label>
+        <label>SIRET<input id="set-siret" type="text" /></label>
+        <label>Devise<input id="set-devise" type="text" /></label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Imprimante</legend>
+        <label>Adresse ePOS-Print (URL complète)
+          <input id="set-printerUrl" type="url" inputmode="url"
+                 placeholder="https://192.168.1.50/cgi-bin/epos/service.cgi?devid=local_printer&amp;timeout=10000" />
+        </label>
+        <label>Largeur du ticket (caractères)
+          <input id="set-lineWidth" type="number" inputmode="numeric" min="24" max="64" />
+        </label>
+        <p class="hint">80 mm = 48 caractères. Si les colonnes sont décalées, essayez 42.</p>
+      </fieldset>
+
+      <button id="close-settings" class="print-btn" type="submit">Fermer</button>
+    </form>
+  </dialog>
+
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>
