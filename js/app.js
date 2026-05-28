@@ -14,6 +14,7 @@ const DEFAULT_SETTINGS = {
   devise: 'EUR',
   lineWidth: 48,
   printerUrl: 'https://192.168.1.50/cgi-bin/epos/service.cgi?devid=local_printer&timeout=10000',
+  piedMessage: "Merci et à bientôt à l'Auberge de La Faîte !",
 };
 
 const DEFAULT_DATA = {
@@ -121,7 +122,7 @@ function refresh() {
 
 const SETTINGS_FIELDS = [
   'nom', 'adresse1', 'adresse2', 'telephone', 'tvaIntra', 'siret',
-  'devise', 'lineWidth', 'printerUrl',
+  'devise', 'lineWidth', 'printerUrl', 'piedMessage',
 ];
 
 function fillSettingsForm() {
@@ -187,6 +188,21 @@ function init() {
       { key: 'montant', type: 'number', placeholder: '0,00', cls: 'amount' },
     ], refresh),
   ];
+
+  // Date / heure : par défaut « maintenant », modifiable, non persisté entre sessions.
+  const dtInput = $('#datetime');
+  const toLocalInput = (d) => {
+    const p = (n) => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`;
+  };
+  const setNow = () => {
+    dtInput.value = toLocalInput(new Date());
+    data.dateTime = dtInput.value;
+    refresh();
+  };
+  dtInput.addEventListener('input', () => { data.dateTime = dtInput.value; refresh(); });
+  $('#now-btn').addEventListener('click', setNow);
+  setNow();
 
   $('#add-item').addEventListener('click', () => editors[0].add());
   $('#add-tva').addEventListener('click', () => editors[1].add());

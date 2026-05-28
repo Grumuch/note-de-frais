@@ -25,6 +25,14 @@ export function padLine(left, right, width) {
   return left + ' '.repeat(spaces) + right;
 }
 
+// "2026-05-28T14:32" (ou vide) -> "28/05/2026 à 14:32".
+export function formatDateTime(value) {
+  const d = value ? new Date(value) : new Date();
+  const dt = isNaN(d.getTime()) ? new Date() : d;
+  const p = (n) => String(n).padStart(2, '0');
+  return `${p(dt.getDate())}/${p(dt.getMonth() + 1)}/${dt.getFullYear()} à ${p(dt.getHours())}:${p(dt.getMinutes())}`;
+}
+
 // a, b, c, ... attribué par taux croissant.
 function letterMap(tvaLines) {
   const rates = [...new Set(tvaLines.map((l) => Number(l.taux)))].sort((a, b) => a - b);
@@ -100,6 +108,11 @@ export function buildBlocks(settings, data) {
       text(padLine(p.libelle || '', formatAmount(p.montant || 0), W))
     );
   }
+
+  // Date/heure puis message de pied de ticket.
+  blocks.push({ type: 'feed', lines: 1 });
+  text(formatDateTime(data.dateTime), { align: 'center' });
+  if (settings.piedMessage) text(settings.piedMessage, { align: 'center' });
 
   blocks.push({ type: 'feed', lines: 3 });
   return blocks;
