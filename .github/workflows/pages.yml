@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - claude/iphone-receipt-printer-3Qt23
   workflow_dispatch:
 
 permissions:
