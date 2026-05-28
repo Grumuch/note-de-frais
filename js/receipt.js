@@ -63,18 +63,25 @@ export function buildBlocks(settings, data) {
   if (settings.tvaIntra) text('TVA intra : ' + settings.tvaIntra, { align: 'center' });
   if (settings.siret) text('Siret : ' + settings.siret, { align: 'center' });
 
+  // Total calculé en amont : il sert de montant aux lignes de désignation.
+  const totals = computeTotals(data);
+
   blocks.push({ type: 'rule' });
 
-  // Lignes de désignation (ex. "2 repas complets" 116,00)
-  (data.items || [])
-    .filter((it) => (it.libelle || '').trim() !== '' || it.montant !== '')
-    .forEach((it) => text(padLine(it.libelle || '', formatAmount(it.montant || 0), W)));
+  // Lignes de désignation. Le montant n'est pas saisi : c'est le TOTAL TTC,
+  // affiché sur la dernière ligne (ex. "2 repas complets" ... 116,00).
+  const itemLabels = (data.items || [])
+    .map((it) => (it.libelle || '').trim())
+    .filter((l) => l !== '');
+  itemLabels.forEach((label, i) => {
+    const isLast = i === itemLabels.length - 1;
+    text(isLast ? padLine(label, formatAmount(totals.totalTTC), W) : label);
+  });
 
   blocks.push({ type: 'rule' });
   blocks.push({ type: 'feed', lines: 1 });
 
   // Récap TVA
-  const totals = computeTotals(data);
   text(padLine('Sous total HT', formatAmount(totals.sousTotalHT), W));
   const letters = letterMap(totals.lines);
   totals.lines.forEach((l) => {

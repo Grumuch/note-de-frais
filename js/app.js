@@ -5,10 +5,10 @@ const SETTINGS_KEY = 'ndf.settings';
 const DATA_KEY = 'ndf.data';
 
 const DEFAULT_SETTINGS = {
-  nom: 'Auberge de la Faîte',
-  adresse1: '1 chemin de faîte',
-  adresse2: '88600 Laval sur Vologne',
-  telephone: '0659129298',
+  nom: 'Auberge de La Faîte',
+  adresse1: '1 Chemin de Faîte',
+  adresse2: '88600 Laval-sur-Vologne',
+  telephone: '06 59 12 92 98',
   tvaIntra: 'FR9094373114',
   siret: '94372311400014',
   devise: 'EUR',
@@ -17,7 +17,7 @@ const DEFAULT_SETTINGS = {
 };
 
 const DEFAULT_DATA = {
-  items: [{ libelle: '2 repas complets', montant: 116.0 }],
+  items: [{ libelle: '2 repas complets' }],
   tvaLines: [
     { taux: 20, ht: 33.33 },
     { taux: 10, ht: 69.09 },
@@ -177,7 +177,6 @@ function init() {
   const editors = [
     listEditor('#items-list', data.items, [
       { key: 'libelle', placeholder: 'Désignation (ex. 2 repas complets)', cls: 'grow' },
-      { key: 'montant', type: 'number', placeholder: '0,00', cls: 'amount' },
     ], refresh),
     listEditor('#tva-list', data.tvaLines, [
       { key: 'taux', type: 'number', step: '0.5', placeholder: 'Taux %', cls: 'rate' },
