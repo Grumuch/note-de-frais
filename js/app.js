@@ -20,12 +20,12 @@ const DEFAULT_SETTINGS = {
 const DEFAULT_DATA = {
   items: [{ libelle: '2 repas complets' }],
   tvaLines: [
-    { taux: 20, ht: 33.33 },
-    { taux: 10, ht: 69.09 },
+    { taux: 20, ht: '' },
+    { taux: 10, ht: '' },
   ],
   paiements: [
-    { libelle: 'Carte de crédit', montant: 96.0 },
-    { libelle: 'Espèces', montant: 20.0 },
+    { libelle: 'Carte de crédit', montant: '' },
+    { libelle: 'Espèces', montant: '' },
   ],
 };
 
