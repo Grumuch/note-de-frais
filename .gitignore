@@ -30,6 +30,8 @@ Carthage/Build/
 
 # Epson SDK (à télécharger localement, non commité)
 Vendor/EpsonSDK/
+web/epos-2.js
+web/epos-2.*.js
 
 # Generated Xcode project (XcodeGen)
 NoteDeFrais.xcodeproj/
