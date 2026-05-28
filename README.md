@@ -38,7 +38,7 @@ L'app est un site statique. Le plus simple est **GitHub Pages** (HTTPS gratuit) 
 
 1. Branchez la TM-m30III en Wi-Fi sur le **même réseau** que l'iPhone.
 2. Trouvez son **adresse IP** : appuyez sur le bouton **FEED** en l'allumant,
-   elle imprime un ticket de configuration avec l'IP (ex. `192.168.1.50`).
+   elle imprime un ticket de configuration avec l'IP (ex. `192.168.1.125`).
 3. Dans la page de configuration web de l'imprimante (Epson TM Utility ou
    `http://IP-de-l-imprimante/`), vérifiez que **ePOS-Print** est **activé**
    et que le **SSL/TLS** (HTTPS) est activé.

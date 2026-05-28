@@ -13,7 +13,7 @@ const DEFAULT_SETTINGS = {
   siret: '94372311400014',
   devise: 'EUR',
   lineWidth: 48,
-  printerUrl: 'https://192.168.1.50/cgi-bin/epos/service.cgi?devid=local_printer&timeout=10000',
+  printerUrl: 'https://192.168.1.125/cgi-bin/epos/service.cgi?devid=local_printer&timeout=10000',
   piedMessage: "Merci et à bientôt à l'Auberge de La Faîte !",
 };
 
